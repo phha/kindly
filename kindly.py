@@ -30,7 +30,7 @@ def timed_cache(cache_time):
     return decorator
 
 urls = list()
-with open('feeds', 'r') as f:
+with app.open_instance_resource('feeds') as f:
     urls = f.readlines()
 
 
