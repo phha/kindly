@@ -52,6 +52,4 @@ def index():
 @app.route('/feed/<feed_name>')
 def feed(feed_name):
     entries = load_feeds()[feed_name].entries
-    for entry in entries:
-        print(entry.summary)
     return render_template('feed.html', entries=load_feeds()[feed_name].entries, feed_name=feed_name)
