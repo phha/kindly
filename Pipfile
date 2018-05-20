@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 flask = "*"
+feedparser = "*"
+flask-bootstrap = "*"
 
 [dev-packages]
 neovim = "*"

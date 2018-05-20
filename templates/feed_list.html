@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title_prefix %}Feeds{% endblock %}
+{% block app_content %}
+<div class="list-group">
+{% for feed in feeds %}
+<div class="list-group-item">
+    <span class="badge">{{ feed.entries|length }}</span>
+    <a href="{{ url_for('feed', feed_name=feed.feed.title) }}">{{ feed.feed.title }}</a>
+</div>
+{% endfor %}
+</div>
+{% endblock %}
