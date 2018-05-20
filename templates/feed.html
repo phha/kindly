@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
 {% block title_prefix %}Feeds{% endblock %}
 {% block app_content %}
-{% for entry in entries %}
 <div class="list-group">
-    <div class="feed_title">{{ entry.title }}</div>
-    <div class="feed_summary">{{ entry.summary_detail.value|striptags }}</div>
-</div>
+{% for entry in entries %}
+    <a href="{{ entry.link }}" class="list-group-item">
+        <h4 class="list-group-item-heading">
+            {{ entry.title }}
+        </h4>
+        <p class="list-group-item.text">
+            {{ entry.summary_detail.value|striptags }}
+        </p>
+    </a>
 {% endfor %}
+</div>
 {% endblock %}
 
