@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title_prefix %}Feeds{% endblock %}
+{% block title_prefix %}{{ feed_name }}{% endblock %}
 {% block app_content %}
 <div class="list-group">
 {% for entry in entries %}
