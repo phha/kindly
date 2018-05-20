@@ -30,7 +30,7 @@ def timed_cache(cache_time):
     return decorator
 
 urls = list()
-with app.open_instance_resource('feeds') as f:
+with app.open_instance_resource('feeds', 'r') as f:
     urls = f.readlines()
 
 
@@ -38,8 +38,11 @@ with app.open_instance_resource('feeds') as f:
 def load_feeds():
     feeds = OrderedDict()
     for url in urls:
-        d = feedparser.parse(url)
-        feeds[d.feed.title] = d
+        try:
+            d = feedparser.parse(url)
+            feeds[d.feed.title] = d
+        except:
+            pass
     return feeds
 
 
