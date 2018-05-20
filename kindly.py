@@ -39,10 +39,12 @@ def load_feeds():
     feeds = OrderedDict()
     for url in urls:
         try:
+            app.logger.info("Parsing feed {0}".format(url))
             d = feedparser.parse(url)
             feeds[d.feed.title] = d
-        except:
-            pass
+        except Exception as e:
+            app.logger.warn("Exception while trying to parse {0}".format(url))
+            app.logger.warn(e)
     return feeds
 
 
