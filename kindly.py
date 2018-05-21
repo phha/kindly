@@ -4,9 +4,26 @@ import functools
 import feedparser
 from flask import Flask, render_template, url_for
 from flask_bootstrap import Bootstrap
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+import config
 
 app = Flask(__name__)
+app.config.from_object('config')
+try:
+    app.config.from_envvar('KINDLY_SETTINGS')
+except RuntimeError:
+    app.logger.warn('Could not load configuration file. Using defaults.')
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 bootstrap = Bootstrap(app)
+
+import models
+from models import User, Feed
+
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db, 'User': User, 'Feed': Feed, 'models': models}
 
 
 def timed_cache(cache_time):
