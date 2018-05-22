@@ -10,6 +10,8 @@ flask-bootstrap = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
 flask-nav = "*"
+flask-wtf = "*"
+flask-login = "*"
 
 [dev-packages]
 neovim = "*"
