@@ -9,6 +9,7 @@ feedparser = "*"
 flask-bootstrap = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
+flask-nav = "*"
 
 [dev-packages]
 neovim = "*"

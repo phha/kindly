@@ -6,6 +6,8 @@ from flask import Flask, render_template, url_for
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_nav import Nav
+from flask_nav.elements import View, Subgroup, Navbar
 import config
 
 app = Flask(__name__)
@@ -17,6 +19,7 @@ except RuntimeError:
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bootstrap = Bootstrap(app)
+nav = Nav(app)
 
 import models
 from models import User, Feed
@@ -50,7 +53,6 @@ urls = list()
 with app.open_instance_resource('feeds', 'r') as f:
     urls = f.readlines()
 
-
 @timed_cache(timedelta(seconds=10))
 def load_feeds():
     feeds = OrderedDict()
@@ -75,3 +77,14 @@ def index():
 def feed(feed_name):
     entries = load_feeds()[feed_name].entries
     return render_template('feed.html', entries=load_feeds()[feed_name].entries, feed_name=feed_name)
+
+@nav.navigation()
+def top_navbar():
+    feed_views = [View(t, 'feed', feed_name=t) for t in load_feeds().keys()]
+    return Navbar(
+        'Kindly',
+        View('Home', 'index'),
+        Subgroup(
+            'Feeds',
+            *feed_views)
+    )
