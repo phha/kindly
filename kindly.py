@@ -4,9 +4,10 @@ import functools
 import feedparser
 from flask import Flask, render_template, url_for
 from flask_bootstrap import Bootstrap
+from flask_bootstrap.nav import BootstrapRenderer
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_nav import Nav
+from flask_nav import Nav, register_renderer
 from flask_nav.elements import View, Subgroup, Navbar
 import config
 
@@ -77,6 +78,15 @@ def index():
 def feed(feed_name):
     entries = load_feeds()[feed_name].entries
     return render_template('feed.html', entries=load_feeds()[feed_name].entries, feed_name=feed_name)
+
+
+class FixedNavBarRenderer(BootstrapRenderer):
+    def visit_Navbar(self, node):
+        nav_tag = super().visit_Navbar(node)
+        nav_tag['class'] += 'navbar navbar-default navbar-fixed-top'
+        return nav_tag
+
+register_renderer(app, 'fixed', FixedNavBarRenderer)
 
 @nav.navigation()
 def top_navbar():

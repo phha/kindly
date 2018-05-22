@@ -4,10 +4,15 @@
 
 {% block styles %}
 {{ super() }}
+<style>
+    body{
+        padding-top: 60px;
+    }
+</style>
 {% endblock %}
 
 {% block navbar %}
-{{ nav.top_navbar.render() }}
+{{ nav.top_navbar.render(renderer='fixed') }}
 {% endblock %}
 
 {% block content %}
