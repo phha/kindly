@@ -2,7 +2,6 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 {% block title_prefix %}Manage User Profile{% endblock %}
 {% block app_content %}
-<h1>Manage User Profile</h1>
 {% if feeds|length %}
 <div class="panel panel-default">
     <div class="panel-heading"><h2 class="panel-title">Your feeds</h2></div>
@@ -21,11 +20,11 @@
         {% endfor %}
     </table>
 </div>
+{% endif %}
 <div class="panel panel-default">
     <div class="panel-heading"><h2 class="panel-title">Add a new feed</h2></div>
     <div class="panel-body">
         {{ wtf.quick_form(form) }}
     </div>
 </div>
-{% endif %}
 {% endblock %}

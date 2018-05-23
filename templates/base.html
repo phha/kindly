@@ -31,11 +31,11 @@
                         <button type="button" class="btn btn-default dropdown-toggle navbar-btn" data-toggle="dropdown">
                             Feeds <span class="caret"/>
                         </button>
-                        {% for feed in current_user.feeds.all() %}
                         <ul class="dropdown-menu">
+                        {% for feed in current_user.feeds.all() %}
                             <li><a href="{{ url_for('feed', feed_name=feed.title) }}">{{ feed.title }}</a>
-                        </ul>
                         {% endfor %}
+                        </ul>
                     </div>
                     {% endif %}
                 </ul>

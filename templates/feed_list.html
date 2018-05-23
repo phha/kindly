@@ -2,11 +2,15 @@
 {% block title_prefix %}Feeds{% endblock %}
 {% block app_content %}
 <div class="list-group">
+{% if feeds|length %}
 {% for feed in feeds %}
 <div class="list-group-item">
     <span class="badge">{{ feed.entries|length }}</span>
     <a href="{{ url_for('feed', feed_name=feed.title) }}">{{ feed.title }}</a>
 </div>
 {% endfor %}
+{% else %}
+Looks like there aren't any feeds. Go ahead and and <a href="{{ url_for('manage') }}">add some</a>!
+{% endif %}
 </div>
 {% endblock %}
