@@ -7,14 +7,13 @@ name = "pypi"
 
 [packages]
 
-flask = "*"
+Flask = "*"
 feedparser = "*"
-flask-bootstrap = "*"
-flask-sqlalchemy = "*"
-flask-migrate = "*"
-flask-nav = "*"
-flask-wtf = "*"
-flask-login = "*"
+Flask-Bootstrap = "*"
+Flask-SQLAlchemy = "*"
+Flask-Migrate = "*"
+Flask-WTF = "*"
+Flask-Login = "*"
 
 
 [dev-packages]
@@ -22,7 +21,7 @@ flask-login = "*"
 neovim = "*"
 ipython = "*"
 flask-shell-ipython = "*"
-jupyter-client = "*"
+jupyter_client = "*"
 
 
 [requires]

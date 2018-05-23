@@ -4,11 +4,8 @@ import functools
 import feedparser
 from flask import Flask, render_template, url_for, flash, redirect, request
 from flask_bootstrap import Bootstrap
-from flask_bootstrap.nav import BootstrapRenderer
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_nav import Nav, register_renderer
-from flask_nav.elements import View, Subgroup, Navbar, Text
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
 from werkzeug.urls import url_parse
 import config
@@ -22,7 +19,6 @@ except RuntimeError:
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bootstrap = Bootstrap(app)
-nav = Nav(app)
 login = LoginManager(app)
 login.login_view = 'login'
 
@@ -36,41 +32,9 @@ def make_shell_context():
     return {'db': db, 'User': User, 'Feed': Feed, 'models': models}
 
 
-class FixedNavBarRenderer(BootstrapRenderer):
-    def visit_Navbar(self, node):
-        nav_tag = super().visit_Navbar(node)
-        nav_tag['class'] += 'navbar navbar-default navbar-fixed-top'
-        return nav_tag
-
-
-register_renderer(app, 'fixed', FixedNavBarRenderer)
-
-
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
-
-
-@nav.navigation()
-def top_navbar():
-    feed_views = [View(t, 'feed', feed_name=t) for t in load_feeds().keys()]
-    user_elements = None
-    if current_user.is_authenticated:
-        user_elements = [
-            Subgroup(
-                "Logged In as '{0}'".format(current_user.username),
-                View('Log Out', 'logout'))
-        ]
-    else:
-        user_elements = [View('Log In', 'login')]
-    return Navbar(
-        'Kindly',
-        View('Home', 'index'),
-        Subgroup(
-            'Feeds',
-            *feed_views),
-        *user_elements
-    )
 
 
 def timed_cache(cache_time):
@@ -118,7 +82,7 @@ def load_feeds():
 @app.route('/feeds')
 @login_required
 def index():
-    return render_template('feed_list.html', feeds=list(load_feeds().values()))
+    return render_template('feed_list.html', feeds=current_user.feeds.all())
 
 
 @app.route('/feed/<feed_name>')
@@ -162,6 +126,39 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Registration successfull. Please log in.')
+        flash('Registration successful. Please log in.')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
+
+
+@app.route('/manage', methods=['GET', 'POST'])
+@login_required
+def manage():
+    form = forms.AddFeedForm()
+    if form.validate_on_submit():
+        feed = Feed(url=form.url.data,
+                    title=form.title.data, user=current_user)
+        try:
+            parsed_feed = feed.parse()
+            if not feed.title:
+                feed.title = parsed_feed.feed.title
+        except RuntimeError:
+            flash(
+                'Could not parse the feed. Please check if the URL is correct')
+            return redirect(url_for('manage'))
+        db.session.add(feed)
+        db.session.commit()
+        flash("Added feed '{0}'".format(feed.title))
+        return redirect(url_for('manage'))
+    return render_template(
+        'manage.html', feeds=current_user.feeds.all(), form=form)
+
+
+@app.route('/delete/<int:feed_id>')
+@login_required
+def delete(feed_id):
+    feed = Feed.query.get(feed_id)
+    db.session.delete(feed)
+    db.session.commit()
+    flash("Deleted feed '{0}'".format(feed.title))
+    return redirect(url_for('manage'))
