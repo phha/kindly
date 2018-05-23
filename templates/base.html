@@ -1,4 +1,6 @@
 {% extends "bootstrap/base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% import 'bootstrap/utils.html' as util %}
 
 {% block title %}{% block title_prefix %}{% endblock %} - Kindly{% endblock %}
 
@@ -45,7 +47,7 @@
                     {% else %}
                     <div class="btn-group">
                         <button type="button" class="btn btn-default dropdown-toggle navbar-btn" data-toggle="dropdown">
-                            <span class="glyphicon glyphicon-user"/> {{ current_user.username }} <span class="caret"/>
+                            {{ util.icon('user') }} {{ current_user.username }} <span class="caret"/>
                         </button>
                         <ul class="dropdown-menu">
                             <li><a href="{{ url_for('manage') }}">Manage Profile</a>
@@ -61,13 +63,7 @@
 
 {% block content %}
     <div class="container">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-info" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
+        {{ util.flashed_messages(default_category='info', dismissible=True) }}
         {% block app_content %}{% endblock %}
     </div>
 {% endblock %}

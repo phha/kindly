@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
 {% block title_prefix %}Manage User Profile{% endblock %}
 {% block app_content %}
 {% if feeds|length %}
@@ -15,7 +14,7 @@
         <tr>
             <td>{{ feed.title }}</td>
             <td>{{ feed.url }}</td>
-            <td><a class="btn btn-danger" role="button" href="{{ url_for('delete', feed_id=feed.id) }}">Delete</a></td>
+            <td>{{ util.form_button(url_for('delete', feed_id=feed.id), util.icon('remove') + ' Delete', method='GET', class='btn btn-danger') }}</td>
         </tr>
         {% endfor %}
     </table>
