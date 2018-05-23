@@ -47,12 +47,10 @@
                         <button type="button" class="btn btn-default dropdown-toggle navbar-btn" data-toggle="dropdown">
                             <span class="glyphicon glyphicon-user"/> {{ current_user.username }} <span class="caret"/>
                         </button>
-                        {% for feed in current_user.feeds.all() %}
                         <ul class="dropdown-menu">
                             <li><a href="{{ url_for('manage') }}">Manage Profile</a>
                             <li><a href="{{ url_for('logout') }}">Log Out</a>
                         </ul>
-                        {% endfor %}
                     </div>
                     {% endif %}
                 </ul>
