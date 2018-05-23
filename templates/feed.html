@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
-{% block title_prefix %}{{ feed_name }}{% endblock %}
+{% block title_prefix %}{{ feed.feed.title }}{% endblock %}
 {% block app_content %}
-<h3>{{ feed_name }}</h3>
+<h3>{{ feed.feed.title }}</h3>
 <div class="list-group">
-{% for entry in entries %}
+{% for entry in feed.entries %}
     <a href="{{ entry.link }}" class="list-group-item">
         <h4 class="list-group-item-heading">
             {{ entry.title }}

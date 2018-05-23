@@ -1,5 +1,4 @@
-import feedparser
-from kindly import db
+from kindly import db, parse_feed
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -26,9 +25,9 @@ class Feed(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def parse(self):
-        return feedparser.parse(self.url)
+        return parse_feed(self.url)
         if not parsed_feed.feed:
-            raise RuntimeError('Could not parse feed.')
+            raise RuntimeError("Could not parse feed '{}'.".format(self.url))
 
     def __repr__(self):
-        return '<Feed {}>'.format(self.url)
+        return '<Feed {}>'.format(self.title)

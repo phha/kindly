@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import functools
 import feedparser
 from flask import Flask, render_template, url_for, flash, redirect, request
+from flask_caching import Cache
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -21,6 +22,16 @@ migrate = Migrate(app, db)
 bootstrap = Bootstrap(app)
 login = LoginManager(app)
 login.login_view = 'login'
+cache = Cache(
+    app,
+    config={'CACHE_TYPE': config.CACHE_TYPE,
+            'CACHE_DEFAULT_TIMEOUT': config.CACHE_DEFAULT_TIMEOUT})
+
+
+@cache.memoize()
+def parse_feed(url):
+    return feedparser.parse(url)
+
 
 import models
 import forms
@@ -37,46 +48,6 @@ def load_user(id):
     return User.query.get(int(id))
 
 
-def timed_cache(cache_time):
-    def decorator(f):
-        class cache_wrapper:
-            def __init__(self, f):
-                self.__cache_time = cache_time
-                self.__last_updated = None
-                self.__wrapped_f = f
-                self.__cached_v = None
-                functools.update_wrapper(self, f)
-
-            def __call__(self, *args, **kwargs):
-                now = datetime.now()
-                if not self.__last_updated or now - self.__last_updated > self.__cache_time:
-                    self.__last_updated = now
-                    self.__cached_v = self.__wrapped_f(*args, **kwargs)
-                return self.__cached_v
-
-        return cache_wrapper(f)
-    return decorator
-
-
-urls = list()
-with app.open_instance_resource('feeds', 'r') as f:
-    urls = f.readlines()
-
-
-@timed_cache(timedelta(seconds=10))
-def load_feeds():
-    feeds = OrderedDict()
-    for url in urls:
-        try:
-            app.logger.info("Parsing feed {0}".format(url))
-            d = feedparser.parse(url)
-            feeds[d.feed.title] = d
-        except Exception as e:
-            app.logger.warn("Exception while trying to parse {0}".format(url))
-            app.logger.warn(e)
-    return feeds
-
-
 @app.route('/')
 @app.route('/index')
 @app.route('/feeds')
@@ -85,11 +56,14 @@ def index():
     return render_template('feed_list.html', feeds=current_user.feeds.all())
 
 
-@app.route('/feed/<feed_name>')
+@app.route('/feed/<int:id>')
 @login_required
-def feed(feed_name):
-    entries = load_feeds()[feed_name].entries
-    return render_template('feed.html', entries=entries, feed_name=feed_name)
+def feed(id):
+    feed = Feed.query.get(id)
+    if feed.user.id != current_user.id:
+        flash('This feed does not belong to you.')
+        return redirect('index')
+    return render_template('feed.html', feed=feed.parse())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -115,6 +89,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
+    flash('You are logged out.')
     return redirect(url_for('login'))
 
 

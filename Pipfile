@@ -1,12 +1,9 @@
 [[source]]
-
 url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 Flask = "*"
 feedparser = "*"
 Flask-Bootstrap = "*"
@@ -14,16 +11,13 @@ Flask-SQLAlchemy = "*"
 Flask-Migrate = "*"
 Flask-WTF = "*"
 Flask-Login = "*"
-
+flask-caching = "*"
 
 [dev-packages]
-
 neovim = "*"
 ipython = "*"
 flask-shell-ipython = "*"
 jupyter_client = "*"
 
-
 [requires]
-
 python_version = "3.6"

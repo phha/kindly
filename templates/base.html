@@ -33,7 +33,7 @@
                         </button>
                         <ul class="dropdown-menu">
                         {% for feed in current_user.feeds.all() %}
-                            <li><a href="{{ url_for('feed', feed_name=feed.title) }}">{{ feed.title }}</a>
+                            <li><a href="{{ url_for('feed', id=feed.id) }}">{{ feed.title }}</a>
                         {% endfor %}
                         </ul>
                     </div>

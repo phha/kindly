@@ -5,8 +5,8 @@
 {% if feeds|length %}
 {% for feed in feeds %}
 <div class="list-group-item">
-    <span class="badge">{{ feed.entries|length }}</span>
-    <a href="{{ url_for('feed', feed_name=feed.title) }}">{{ feed.title }}</a>
+    <span class="badge">{{ feed.parse().entries|length }}</span>
+    <a href="{{ url_for('feed', id=feed.id) }}">{{ feed.title }}</a>
 </div>
 {% endfor %}
 {% else %}
