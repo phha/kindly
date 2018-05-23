@@ -2,7 +2,7 @@ from kindly import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
@@ -18,7 +18,7 @@ class User(db.Model):
         return '<User {}>'.format(self.username)    
 
 
-class Feed(UserMixin, db.Model):
+class Feed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
