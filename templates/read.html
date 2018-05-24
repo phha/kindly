@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title_prefix %}{{ article_title }}{% endblock %}
+{% block app_content %}
+{% if article_title %}
+    <h1>{{ article_title }}</h1>
+{% endif %}
+<a href="{{ original_article }}">Original article</a>
+{% for paragraph in paragraphs %}
+    {% if not paragraph.is_boilerplate %}
+        {% if paragraph.is_heading %}
+            <h2>{{ paragraph.text }}</h2>
+        {% else %}
+            <p>{{ paragraph.text }}</p>
+        {% endif %}
+    {% endif %}
+{% endfor %}
+{% endblock %}

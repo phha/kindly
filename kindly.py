@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from datetime import datetime, timedelta
-import functools
+import requests
+from justext import justext, get_stoplists, get_stoplist
 import feedparser
 from flask import Flask, render_template, url_for, flash, redirect, request
 from flask_caching import Cache
@@ -32,6 +33,11 @@ cache = Cache(
 @cache.memoize()
 def parse_feed(url):
     return feedparser.parse(url)
+
+
+stopwords = set()
+for language in get_stoplists():
+    stopwords.update(get_stoplist(language))
 
 
 import models
@@ -76,6 +82,18 @@ def feed(id):
         parsed_feed.entries, page=page, per_page=config.ENTRIES_PER_PAGE)
     return render_template(
         'feed.html', title=parsed_feed.feed.title, entries=pagination)
+
+
+@app.route('/read/<path:url>')
+@login_required
+def read(url):
+    title = request.args.get('article_title', None, type=str)
+    app.logger.info("Article title: {0}".format(title))
+    response = requests.get(url)
+    paragraphs = justext(response.content, stopwords)
+    return render_template(
+        'read.html', paragraphs=paragraphs,
+        article_title=title, original_article=url)
 
 
 @app.route('/login', methods=['GET', 'POST'])
