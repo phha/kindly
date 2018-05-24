@@ -89,7 +89,7 @@ def feed(id):
 def read(url):
     title = request.args.get('article_title', None, type=str)
     app.logger.info("Article title: {0}".format(title))
-    response = requests.get(url)
+    response = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
     paragraphs = justext(response.content, stopwords)
     return render_template(
         'read.html', paragraphs=paragraphs,
