@@ -8,9 +8,11 @@
         <h4 class="list-group-item-heading">
             {{ entry.title }}
         </h4>
+        {% if entry.summary %}
         <p class="list-group-item.text">
-            {{ entry.summary_detail.value|striptags }}
+            {{ entry.summary|striptags }}
         </p>
+        {% endif %}
     </a>
 {% endfor %}
 </div>
