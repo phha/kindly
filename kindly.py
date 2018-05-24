@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager, current_user, login_user, login_required, logout_user
 from werkzeug.urls import url_parse
+from paginate import Pagination
 import config
 
 app = Flask(__name__)
@@ -40,7 +41,13 @@ from models import User, Feed
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'User': User, 'Feed': Feed, 'models': models}
+    return {
+        'db': db,
+        'User': User,
+        'Feed': Feed,
+        'models': models,
+        'Pagination': Pagination
+    }
 
 
 @login.user_loader
@@ -59,11 +66,16 @@ def index():
 @app.route('/feed/<int:id>')
 @login_required
 def feed(id):
+    page = request.args.get('page', 1, type=int)
     feed = Feed.query.get(id)
     if feed.user.id != current_user.id:
         flash('This feed does not belong to you.')
         return redirect('index')
-    return render_template('feed.html', feed=feed.parse())
+    parsed_feed = feed.parse()
+    pagination = Pagination(
+        parsed_feed.entries, page=page, per_page=config.ENTRIES_PER_PAGE)
+    return render_template(
+        'feed.html', title=parsed_feed.feed.title, entries=pagination)
 
 
 @app.route('/login', methods=['GET', 'POST'])
