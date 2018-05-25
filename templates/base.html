@@ -1,6 +1,6 @@
 {% extends "bootstrap/base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
-{% import 'bootstrap/utils.html' as util %}
+{% from 'bootstrap/utils.html' import flashed_messages, icon, form_button %}
 {% from 'bootstrap/pagination.html' import render_pagination %}
 
 {% block title %}{% block title_prefix %}{% endblock %} - Kindly{% endblock %}
@@ -48,7 +48,7 @@
                     {% else %}
                     <div class="btn-group">
                         <button type="button" class="btn btn-default dropdown-toggle navbar-btn" data-toggle="dropdown">
-                            {{ util.icon('user') }} {{ current_user.username }} <span class="caret"/>
+                            {{ icon('user') }} {{ current_user.username }} <span class="caret"/>
                         </button>
                         <ul class="dropdown-menu">
                             <li><a href="{{ url_for('manage') }}">Manage Profile</a>
@@ -64,8 +64,7 @@
 
 {% block content %}
     <div class="container">
-        {{ util.flashed_messages(default_category='info', dismissible=True) }}
+        {{ flashed_messages(default_category='info', dismissible=True) }}
         {% block app_content %}{% endblock %}
     </div>
 {% endblock %}
-

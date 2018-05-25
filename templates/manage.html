@@ -14,7 +14,7 @@
         <tr>
             <td>{{ feed.title }}</td>
             <td>{{ feed.url }}</td>
-            <td>{{ util.form_button(url_for('delete', feed_id=feed.id), util.icon('remove') + ' Delete', method='GET', class='btn btn-danger') }}</td>
+            <td>{{ form_button(url_for('delete', feed_id=feed.id), icon('remove') + ' Delete', method='GET', class='btn btn-danger') }}</td>
         </tr>
         {% endfor %}
     </table>
