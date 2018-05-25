@@ -6,10 +6,10 @@
 {% block title %}{% block title_prefix %}{% endblock %} - Kindly{% endblock %}
 
 {% block styles %}
-{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-kindle/css/bootstrap.min.css') }}">
 <style>
     body{
-        padding-top: 60px;
+        padding-top: 100px;
     }
 </style>
 {% endblock %}
