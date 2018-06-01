@@ -7,7 +7,7 @@ class Pagination:
         self.page = page
         self.per_page = per_page
         self.total = total
-        if not self.total:
+        if self.total is None:
             try:
                 self.total = len(self.iterable)
             except:
